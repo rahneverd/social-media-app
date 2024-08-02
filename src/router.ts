@@ -5,14 +5,11 @@ import * as userController from './controllers/userController';
 
 const router = express.Router();
 
-// router.get('/', (req: express.Request, res: express.Response) => {
-//   res.render('home-guest');
-// });
-
+// home route
 router.get('/', userController.home);
 
 // auth related routes
-// router.post('/login')
+router.post('/register', userController.register);
 
 // user related routes
 router.use('/users', userRouter);

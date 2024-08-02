@@ -8,11 +8,15 @@ dotenv.config();
 // initialize app
 const app = express();
 
+// set req data
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 // set public
 app.use(express.static('./public'));
 
 // set views
-app.set('views', './views');
+app.set('views', './src/views');
 app.set('view engine', 'ejs');
 
 // set router
