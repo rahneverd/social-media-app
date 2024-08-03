@@ -1,12 +1,16 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import router from './router';
+import cors from 'cors';
 
 // load environment variables
 dotenv.config();
 
 // initialize app
 const app = express();
+
+// set cors
+app.use(cors());
 
 // set req data
 app.use(express.urlencoded({ extended: false }));
