@@ -8,9 +8,8 @@ export const home = (req: express.Request, res: express.Response) => {
 
 // register controller
 export const register = (req: express.Request, res: express.Response) => {
-  console.log(req.body);
   let user = new User(req?.body);
-  console.log(user);
+  user.register();
   res.status(200).send('Thank you for registering with us').end();
 };
 
