@@ -29,7 +29,7 @@ class User {
     };
   }
 
-  validate() {
+  validate(condition?: string) {
     // Step #1: Add validation logic here
     // Example: if (this.email && this.password && this.username) {
     //   return true;
@@ -38,27 +38,40 @@ class User {
     // You can use a library like "validator" for this purpose
     // Example: return validator.isEmail(this.email) && validator.isLength(this.password, { min: 8 }) && validator.isAlphanumeric(this.username);
     // check email
-    if (!validator.isEmail(this.data?.email)) {
+    if (!validator.isEmail(this.data?.email) && condition !== 'skipEmail') {
       this.errors.push('You must provide a email');
     }
     // check username
-    if (!this.data?.username || this.data?.username === '') {
+    if (
+      !this.data?.username ||
+      (this.data?.username === '' && condition !== 'skipUsername')
+    ) {
       this.errors.push('You must provide a username');
     }
-    if (this.data?.username?.length < 4 || this.data?.username?.length > 12) {
+    if (
+      (this.data?.username?.length < 4 || this.data?.username?.length > 12) &&
+      condition !== 'skipUsername'
+    ) {
       this.errors.push('username must be between 4 and 12 characters');
     }
     if (
       this.data?.username !== '' &&
-      !validator.isAlphanumeric(this.data?.username)
+      !validator.isAlphanumeric(this.data?.username) &&
+      condition !== 'skipUsername'
     ) {
       this.errors.push('Username can only contain alphanumeric characters');
     }
     // check password
-    if (!this.data?.password || this.data?.password === '') {
+    if (
+      (!this.data?.password || this.data?.password === '') &&
+      condition !== 'skipPassword'
+    ) {
       this.errors.push('You must provide a password');
     }
-    if (this.data?.password?.length < 6 || this.data?.password?.length > 200) {
+    if (
+      (this.data?.password?.length < 6 || this.data?.password?.length > 200) &&
+      condition !== 'skipPassword'
+    ) {
       this.errors.push('Password must be between 6 and 200 characters');
     }
   }
@@ -75,6 +88,28 @@ class User {
       } else {
         let newUser = await usersCollection.insertOne(this.data);
         resolve(newUser);
+      }
+    });
+  }
+
+  login() {
+    return new Promise(async (resolve, reject) => {
+      // Step #0: Make sure all data is provided and clean it
+      this.cleanUp();
+      // Step #1: Validate data
+      this.validate('skipEmail');
+      // Step #2: if no validation errors then save user data in db
+      if (this.errors.length) {
+        reject(this.errors);
+      } else {
+        let newUser = await usersCollection.findOne({
+          username: this.data?.username
+        });
+        if (newUser && newUser?.password === this.data?.password) {
+          resolve(newUser);
+        } else {
+          reject('Invalid username or password');
+        }
       }
     });
   }

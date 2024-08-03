@@ -10,6 +10,7 @@ router.get('/', userController.home);
 
 // auth related routes
 router.post('/register', userController.register);
+router.post('/login', userController.login);
 
 // user related routes
 router.use('/users', userRouter);
