@@ -7,12 +7,12 @@ export const home = (req: express.Request, res: express.Response) => {
 };
 
 // register controller
-export const register = (req: express.Request, res: express.Response) => {
+export const register = async (req: express.Request, res: express.Response) => {
   let user = new User(req?.body);
-  user.register();
-  if (!user.errors.length) {
+  try {
+    await user.register();
     res.status(200).send('Thank you for registering with us').end();
-  } else {
+  } catch (error) {
     res.status(400).send(user.errors).end();
   }
 };

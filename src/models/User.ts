@@ -69,11 +69,18 @@ class User {
   }
 
   register() {
-    // Step #0: Make sure all data is provided and clean it
-    this.cleanUp();
-    // Step #1: Validate data
-    this.validate();
-    // Step #2: if no validation errors then save user data in db
+    return new Promise((resolve, reject) => {
+      // Step #0: Make sure all data is provided and clean it
+      this.cleanUp();
+      // Step #1: Validate data
+      this.validate();
+      // Step #2: if no validation errors then save user data in db
+      if (this.errors.length) {
+        reject(this.errors);
+      } else {
+        resolve(true);
+      }
+    });
   }
 }
 
