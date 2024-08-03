@@ -1,4 +1,5 @@
 import { UserInterface } from 'common/interfaces';
+import validator from 'validator';
 
 class User {
   data: UserInterface;
@@ -31,7 +32,7 @@ class User {
       this.errors.push('username must be between 4 and 12 characters');
     }
     // check email
-    if (!this.data?.email || this.data?.email === '') {
+    if (validator.isEmail(this.data?.email)) {
       this.errors.push('You must provide a email');
     }
     // check password
