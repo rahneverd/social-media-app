@@ -27,6 +27,9 @@ class User {
     if (!this.data?.username || this.data?.username === '') {
       this.errors.push('You must provide a username');
     }
+    if (this.data?.username?.length < 4 || this.data?.username?.length > 12) {
+      this.errors.push('username must be between 4 and 12 characters');
+    }
     // check email
     if (!this.data?.email || this.data?.email === '') {
       this.errors.push('You must provide a email');
@@ -34,6 +37,9 @@ class User {
     // check password
     if (!this.data?.password || this.data?.password === '') {
       this.errors.push('You must provide a password');
+    }
+    if (this.data?.password?.length < 6 || this.data?.password?.length > 200) {
+      this.errors.push('Password must be between 6 and 200 characters');
     }
   }
 

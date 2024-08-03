@@ -10,7 +10,11 @@ export const home = (req: express.Request, res: express.Response) => {
 export const register = (req: express.Request, res: express.Response) => {
   let user = new User(req?.body);
   user.register();
-  res.status(200).send('Thank you for registering with us').end();
+  if (!user.errors.length) {
+    res.status(200).send('Thank you for registering with us').end();
+  } else {
+    res.status(400).send(user.errors).end();
+  }
 };
 
 // login controller
