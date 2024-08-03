@@ -1,6 +1,7 @@
 import { UserInterface } from 'common/interfaces';
 import validator from 'validator';
 import { usersCollection } from '../db';
+import bcrypt from 'bcryptjs';
 
 class User {
   data: UserInterface;
@@ -86,6 +87,10 @@ class User {
       if (this.errors.length) {
         reject(this.errors);
       } else {
+        // encrypt user password
+        let salt = bcrypt.genSaltSync(10);
+        this.data.password = bcrypt.hashSync(this.data?.password, salt);
+        // save user to db
         let newUser = await usersCollection.insertOne(this.data);
         resolve(newUser);
       }
