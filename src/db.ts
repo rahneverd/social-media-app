@@ -12,7 +12,7 @@ async function connectToDatabase(): Promise<Db> {
   if (!db) {
     await client.connect();
     db = client.db(process.env.DB);
-    usersCollection = db.collection('users');
+    usersCollection = db.collection(process.env.USERCOLLECTION || 'users');
     console.log('Connected to MongoDB');
   }
   return db;
