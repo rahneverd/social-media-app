@@ -70,10 +70,10 @@ class User {
       this.errors.push('You must provide a password');
     }
     if (
-      (this.data?.password?.length < 6 || this.data?.password?.length > 200) &&
+      (this.data?.password?.length < 6 || this.data?.password?.length > 40) &&
       condition !== 'skipPassword'
     ) {
-      this.errors.push('Password must be between 6 and 200 characters');
+      this.errors.push('Password must be between 6 and 40 characters');
     }
   }
 
@@ -110,7 +110,10 @@ class User {
         let newUser = await usersCollection.findOne({
           username: this.data?.username
         });
-        if (newUser && newUser?.password === this.data?.password) {
+        if (
+          newUser &&
+          bcrypt.compareSync(this.data?.password, newUser?.password)
+        ) {
           resolve(newUser);
         } else {
           reject('Invalid username or password');
