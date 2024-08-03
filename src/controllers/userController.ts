@@ -10,8 +10,8 @@ export const home = (req: express.Request, res: express.Response) => {
 export const register = async (req: express.Request, res: express.Response) => {
   let user = new User(req?.body);
   try {
-    await user.register();
-    res.status(200).send('Thank you for registering with us').end();
+    let newUser = await user.register();
+    res.status(200).send(newUser).end();
   } catch (error) {
     res.status(400).send(user.errors).end();
   }

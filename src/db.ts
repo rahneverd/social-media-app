@@ -1,27 +1,33 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, Db, Collection } from 'mongodb';
 import app from './app';
 import dotenv from 'dotenv';
 dotenv.config();
 
+let db: Db;
+let usersCollection: Collection;
+
 const client = new MongoClient(process.env.CONNECTIONSTRING || '');
 
-async function start() {
-  // connect to MongoDB
-  await client.connect();
-  console.log('Connected to MongoDB');
-  // start app
-  app.listen(process.env.PORT, () => {
-    console.log(`server running on http://localhost:${process.env.PORT}`);
-  });
-  // create database and collections
-  // const db = client.db('mydatabase');
-  // const usersCollection = db.collection('users');
-  // const postsCollection = db.collection('posts');
-
-  // close the connection
-  // await client.close();
-  // console.log('Connection to MongoDB closed');
+async function connectToDatabase(): Promise<Db> {
+  if (!db) {
+    await client.connect();
+    db = client.db(process.env.DB);
+    usersCollection = db.collection('users');
+    console.log('Connected to MongoDB');
+  }
+  return db;
+}
+async function startServer() {
+  try {
+    await connectToDatabase();
+    app.listen(process.env.PORT, () => {
+      console.log(`Server running on http://localhost:${process.env.PORT}`);
+    });
+  } catch (err) {
+    console.error('Failed to start the server', err);
+  }
 }
 
-start();
-export default client.db();
+startServer();
+
+export { connectToDatabase, usersCollection };

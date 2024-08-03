@@ -1,19 +1,14 @@
 import { UserInterface } from 'common/interfaces';
 import validator from 'validator';
+import { usersCollection } from '../db';
 
 class User {
   data: UserInterface;
   errors: any[];
-  // email: string;
-  // password: string;
-  // username: string;
 
   constructor(data: UserInterface) {
     this.data = data;
     this.errors = [];
-    // this.email = data?.email;
-    // this.password = data?.password;
-    // this.username = data?.username;
   }
 
   cleanUp() {
@@ -69,7 +64,7 @@ class User {
   }
 
   register() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       // Step #0: Make sure all data is provided and clean it
       this.cleanUp();
       // Step #1: Validate data
@@ -78,7 +73,8 @@ class User {
       if (this.errors.length) {
         reject(this.errors);
       } else {
-        resolve(true);
+        let newUser = await usersCollection.insertOne(this.data);
+        resolve(newUser);
       }
     });
   }
