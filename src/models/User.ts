@@ -28,7 +28,7 @@ class User {
     }
     // get rid of any bogus properties
     this.data = {
-      username: this.data?.username?.trim(),
+      username: this.data?.username?.trim().toLocaleLowerCase(),
       email: this.data?.email?.trim().toLocaleLowerCase(),
       password: this.data?.password
     };
