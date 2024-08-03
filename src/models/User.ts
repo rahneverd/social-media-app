@@ -16,6 +16,24 @@ class User {
     // this.username = data?.username;
   }
 
+  cleanUp() {
+    if (typeof this.data?.email !== 'string') {
+      this.data.email = '';
+    }
+    if (typeof this.data?.username !== 'string') {
+      this.data.username = '';
+    }
+    if (typeof this.data?.password !== 'string') {
+      this.data.password = '';
+    }
+    // get rid of any bogus properties
+    this.data = {
+      username: this.data?.username?.trim(),
+      email: this.data?.email?.trim().toLocaleLowerCase(),
+      password: this.data?.password
+    };
+  }
+
   validate() {
     // Step #1: Add validation logic here
     // Example: if (this.email && this.password && this.username) {
@@ -51,6 +69,8 @@ class User {
   }
 
   register() {
+    // Step #0: Make sure all data is provided and clean it
+    this.cleanUp();
     // Step #1: Validate data
     this.validate();
     // Step #2: if no validation errors then save user data in db
