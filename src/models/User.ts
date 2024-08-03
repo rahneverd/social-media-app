@@ -24,6 +24,10 @@ class User {
     // return false;
     // You can use a library like "validator" for this purpose
     // Example: return validator.isEmail(this.email) && validator.isLength(this.password, { min: 8 }) && validator.isAlphanumeric(this.username);
+    // check email
+    if (!validator.isEmail(this.data?.email)) {
+      this.errors.push('You must provide a email');
+    }
     // check username
     if (!this.data?.username || this.data?.username === '') {
       this.errors.push('You must provide a username');
@@ -31,9 +35,11 @@ class User {
     if (this.data?.username?.length < 4 || this.data?.username?.length > 12) {
       this.errors.push('username must be between 4 and 12 characters');
     }
-    // check email
-    if (!validator.isEmail(this.data?.email)) {
-      this.errors.push('You must provide a email');
+    if (
+      this.data?.username !== '' &&
+      !validator.isAlphanumeric(this.data?.username)
+    ) {
+      this.errors.push('Username can only contain alphanumeric characters');
     }
     // check password
     if (!this.data?.password || this.data?.password === '') {
