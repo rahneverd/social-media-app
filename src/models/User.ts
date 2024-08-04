@@ -107,16 +107,21 @@ class User {
       if (this.errors.length) {
         reject(this.errors);
       } else {
-        let newUser = await usersCollection.findOne({
+        let newUser: any = await usersCollection.findOne({
           username: this.data?.username
         });
         if (
           newUser &&
           bcrypt.compareSync(this.data?.password, newUser?.password)
         ) {
+          newUser = {
+            data: newUser._id,
+            username: newUser.username,
+            email: newUser.email
+          };
           resolve(newUser);
         } else {
-          reject('Invalid username or password');
+          reject(['Invalid username or password']);
         }
       }
     });

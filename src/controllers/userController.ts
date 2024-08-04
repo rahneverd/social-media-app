@@ -1,5 +1,6 @@
 import express from 'express';
 import User from '../models/User';
+import jwt from 'jsonwebtoken';
 
 // home controller
 export const home = (req: express.Request, res: express.Response) => {
@@ -20,11 +21,19 @@ export const register = async (req: express.Request, res: express.Response) => {
 // login controller
 export const login = async (req: express.Request, res: express.Response) => {
   let user = new User(req?.body);
+  console.log(user);
   try {
-    let newUser = await user.login();
-    res.status(200).send(newUser).end();
+    let newUser: any = await user.login();
+    console.log(newUser);
+    let token = await jwt.sign(
+      { _id: newUser.data._id },
+      process.env.JWTSECRET || '',
+      { expiresIn: '30m' }
+    );
+    console.log(token);
+    res.status(200).json(token).end();
   } catch (error) {
-    res.status(400).send(error).end();
+    res.status(400).json(error).end();
   }
 };
 
