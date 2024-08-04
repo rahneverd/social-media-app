@@ -8,6 +8,19 @@ export const home = (req: express.Request, res: express.Response) => {
   res.render('home-guest');
 };
 
+export const apiMustBeLoggedIn = (
+  req: express.Request & { apiUser: any },
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    req['apiUser'] = jwt.verify(req?.body?.token, process.env.JWTSECRET || '');
+    next();
+  } catch (error) {
+    res.status(403).json('Sorry, you must provide a valid token').end();
+  }
+};
+
 // register controller
 export const register = async (req: express.Request, res: express.Response) => {
   let user = new User(req?.body);
@@ -79,7 +92,8 @@ export const apiLogin = async (req: express.Request, res: express.Response) => {
         token: token,
         username: newUser?.data?.username,
         _id: newUser?.data?._id,
-        email: newUser?.data?.email
+        email: newUser?.data?.email,
+        picture: newUser?.data?.picture
       })
       .end();
   } catch (error) {

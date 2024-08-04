@@ -2,6 +2,8 @@ import { UserInterface } from 'common/interfaces';
 import validator from 'validator';
 import { usersCollection } from '../db';
 import bcrypt from 'bcryptjs';
+import { USER_CONST } from '../common/constants';
+import md5 from 'md5';
 
 class User {
   data: UserInterface;
@@ -39,42 +41,71 @@ class User {
     // You can use a library like "validator" for this purpose
     // Example: return validator.isEmail(this.email) && validator.isLength(this.password, { min: 8 }) && validator.isAlphanumeric(this.username);
     // check email
-    if (!validator.isEmail(this.data?.email) && condition !== 'skipEmail') {
+    if (
+      !validator.isEmail(this.data?.email) &&
+      condition !== USER_CONST.SKIP_EMAIL
+    ) {
       this.errors.push('You must provide a email');
     }
     // check username
     if (
       !this.data?.username ||
-      (this.data?.username === '' && condition !== 'skipUsername')
+      (this.data?.username === '' && condition !== USER_CONST.SKIP_USERNAME)
     ) {
       this.errors.push('You must provide a username');
     }
     if (
       (this.data?.username?.length < 4 || this.data?.username?.length > 12) &&
-      condition !== 'skipUsername'
+      condition !== USER_CONST.SKIP_USERNAME
     ) {
       this.errors.push('username must be between 4 and 12 characters');
     }
     if (
       this.data?.username !== '' &&
       !validator.isAlphanumeric(this.data?.username) &&
-      condition !== 'skipUsername'
+      condition !== USER_CONST.SKIP_USERNAME
     ) {
       this.errors.push('Username can only contain alphanumeric characters');
     }
     // check password
     if (
       (!this.data?.password || this.data?.password === '') &&
-      condition !== 'skipPassword'
+      condition !== USER_CONST.SKIP_PASSWORD
     ) {
       this.errors.push('You must provide a password');
     }
     if (
       (this.data?.password?.length < 6 || this.data?.password?.length > 40) &&
-      condition !== 'skipPassword'
+      condition !== USER_CONST.SKIP_PASSWORD
     ) {
       this.errors.push('Password must be between 6 and 40 characters');
     }
+  }
+
+  findOneByUsername() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let user = await usersCollection.findOne({
+          username: this.data?.username
+        });
+        resolve(user);
+      } catch (error) {
+        reject();
+      }
+    });
+  }
+
+  findOneByEmail() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let user = await usersCollection.findOne({
+          email: this.data?.email
+        });
+        resolve(user);
+      } catch (error) {
+        reject();
+      }
+    });
   }
 
   register() {
@@ -87,12 +118,30 @@ class User {
       if (this.errors.length) {
         reject(this.errors);
       } else {
-        // encrypt user password
-        let salt = bcrypt.genSaltSync(10);
-        this.data.password = bcrypt.hashSync(this.data?.password, salt);
+        // check if username exists
+        let usernameExists = await this.findOneByUsername();
+        if (usernameExists) {
+          reject(['Username already exists']);
+        } else {
+          // check if email exists
+          let emailExists = await this.findOneByEmail();
+          if (emailExists) {
+            reject(['Email already exists']);
+          } else {
+            // create user avatar
+            this.getAvatar();
+            // encrypt user password
+            let salt = bcrypt.genSaltSync(10);
+            this.data.password = bcrypt.hashSync(this.data?.password, salt);
+            // save user to db
+            let newUser = await usersCollection.insertOne(this.data);
+            resolve(newUser);
+          }
+        }
+        // check if email exists
         // save user to db
-        let newUser = await usersCollection.insertOne(this.data);
-        resolve(newUser);
+        // let newUser = await usersCollection.insertOne(this.data);
+        // resolve(newUser);
       }
     });
   }
@@ -102,7 +151,7 @@ class User {
       // Step #0: Make sure all data is provided and clean it
       this.cleanUp();
       // Step #1: Validate data
-      this.validate('skipEmail');
+      this.validate(USER_CONST.SKIP_EMAIL);
       // Step #2: if no validation errors then save user data in db
       if (this.errors.length) {
         reject(this.errors);
@@ -118,7 +167,8 @@ class User {
             data: {
               _id: newUser._id,
               username: newUser.username,
-              email: newUser.email
+              email: newUser.email,
+              picture: newUser.picture
             }
           };
           resolve(newUser);
@@ -127,6 +177,12 @@ class User {
         }
       }
     });
+  }
+
+  getAvatar() {
+    this.data.picture = `https://gravatar.com/avatar/${md5(
+      this.data?.email
+    )}?s=128`;
   }
 }
 
