@@ -1,3 +1,4 @@
+import { UserInterface } from 'common/interfaces';
 import express from 'express';
 import User from '../models/User';
 import jwt from 'jsonwebtoken';
@@ -31,7 +32,15 @@ export const login = async (req: express.Request, res: express.Response) => {
       { expiresIn: '30m' }
     );
     console.log(token);
-    res.status(200).json(token).end();
+    res
+      .status(200)
+      .json({
+        token: token,
+        username: newUser?.data?.username,
+        _id: newUser?.data?._id,
+        email: newUser?.data?.email
+      })
+      .end();
   } catch (error) {
     res.status(400).json(error).end();
   }
