@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import router from './router';
+import apiRouter from './api-router';
 import cors from 'cors';
 
 // load environment variables
@@ -18,6 +19,9 @@ app.use(express.json());
 
 // set public
 app.use(express.static('./public'));
+
+// set api router
+app.use('/api', apiRouter);
 
 // set views
 app.set('views', './src/views');

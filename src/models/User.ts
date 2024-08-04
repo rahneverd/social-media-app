@@ -115,9 +115,11 @@ class User {
           bcrypt.compareSync(this.data?.password, newUser?.password)
         ) {
           newUser = {
-            data: newUser._id,
-            username: newUser.username,
-            email: newUser.email
+            data: {
+              _id: newUser._id,
+              username: newUser.username,
+              email: newUser.email
+            }
           };
           resolve(newUser);
         } else {
