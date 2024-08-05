@@ -45,7 +45,7 @@ class User {
       !validator.isEmail(this.data?.email) &&
       condition !== USER_CONST.SKIP_EMAIL
     ) {
-      this.errors.push('You must provide a email');
+      this.errors.push('You must provide a valid email');
     }
     // check username
     if (
