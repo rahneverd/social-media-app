@@ -8,7 +8,7 @@ export interface UserInterface {
 export interface PostInterface {
   // title: string;
   caption?: string;
-  author: any;
+  author?: any;
   image: string;
   createdAt?: Date;
 }

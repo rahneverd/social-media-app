@@ -16,7 +16,7 @@ export const apiUpload = async (
   res: express.Response
 ) => {
   if (req?.file?.path) {
-    res.status(200).json(req.file?.path).end();
+    res.status(200).json(req.file?.path?.slice(7)).end();
   } else {
     res.status(400).send('failed');
   }

@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post(
-  '/create',
+  '/create-post',
   userController.apiMustBeLoggedIn,
   postController.apiCreate
 );
