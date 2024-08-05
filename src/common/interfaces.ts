@@ -7,8 +7,8 @@ export interface UserInterface {
 
 export interface PostInterface {
   // title: string;
-  body: string;
+  caption?: string;
   author: any;
-  image?: string;
+  image: string;
   createdAt?: Date;
 }

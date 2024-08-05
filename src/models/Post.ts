@@ -16,12 +16,12 @@ class Post {
   // cleanup
   cleanUp() {
     // if (typeof this.data?.title !== 'string') this.data.title = ''
-    if (typeof this.data?.body !== 'string') this.data.body = '';
+    if (typeof this.data?.caption !== 'string') this.data.caption = '';
     if (typeof this.data?.image !== 'string') this.data.image = '';
 
     // get rid of bogus properties
     this.data = {
-      body: this.data?.body.trim(),
+      caption: this.data?.caption.trim(),
       author: this.data?.author,
       image: this.data?.image,
       createdAt: new Date()
@@ -30,8 +30,9 @@ class Post {
 
   // validate
   validate() {
-    if (!this.data?.body?.length)
-      this.errors.push('Post body cannot be empty.');
+    // if (!this.data?.caption?.length)
+    //   this.errors.push('Post caption cannot be empty.');
+    if (!this.data?.image?.length) this.errors.push('Post image missing.');
   }
 
   create() {
@@ -56,6 +57,8 @@ class Post {
   findOneById(id: any) {
     postsCollection.findOne({ _id: id });
   }
+
+  upload() {}
 }
 
 export default Post;

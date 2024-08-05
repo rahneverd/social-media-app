@@ -10,3 +10,14 @@ export const apiCreate = async (req: any, res: express.Response) => {
     res.status(404).json(error).end();
   }
 };
+
+export const apiUpload = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  if (req?.file?.path) {
+    res.status(200).json(req.file?.path).end();
+  } else {
+    res.status(400).send('failed');
+  }
+};
