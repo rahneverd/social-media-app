@@ -29,7 +29,7 @@ router.post(
 router.post(
   '/upload',
   // userController.apiMustBeLoggedIn,
-  upload.single('image'),
+  upload.single('file'),
   postController.apiUpload
 );
 
