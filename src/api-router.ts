@@ -2,6 +2,7 @@ import express from 'express';
 import userRouter from './routes/userRouter';
 import postRouter from './routes/postRouter';
 import * as userController from './controllers/userController';
+import apiPostRouter from './routes/apiPostRouter';
 
 const router = express.Router();
 
@@ -16,9 +17,9 @@ router.post('/login', userController.apiLogin);
 router.post('/logout', userController.apiLogout);
 
 // user related routes
-router.use('/users', userRouter);
+// router.use('/users', apiUserRouter);
 
 // post related routes
-router.post('/posts', postRouter);
+router.use('/posts', apiPostRouter);
 
 export default router;

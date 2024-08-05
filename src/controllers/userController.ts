@@ -9,7 +9,7 @@ export const home = (req: express.Request, res: express.Response) => {
 };
 
 export const apiMustBeLoggedIn = (
-  req: express.Request & { apiUser: any },
+  req: any,
   res: express.Response,
   next: express.NextFunction
 ) => {

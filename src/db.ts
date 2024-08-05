@@ -5,6 +5,7 @@ dotenv.config();
 
 let db: Db;
 let usersCollection: Collection;
+let postsCollection: Collection;
 
 const client = new MongoClient(process.env.CONNECTIONSTRING || '');
 
@@ -13,6 +14,7 @@ async function connectToDatabase(): Promise<Db> {
     await client.connect();
     db = client.db(process.env.DB);
     usersCollection = db.collection(process.env.USERCOLLECTION || 'users');
+    postsCollection = db.collection(process.env.POSTCOLLECTION || 'users');
     console.log('Connected to MongoDB');
   }
   return db;
@@ -30,4 +32,4 @@ async function startServer() {
 
 startServer();
 
-export { connectToDatabase, usersCollection };
+export { connectToDatabase, usersCollection, postsCollection };
