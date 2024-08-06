@@ -33,4 +33,10 @@ router.post(
   postController.apiUpload
 );
 
+router.post(
+  '/findByUserId',
+  // userController.apiMustBeLoggedIn,
+  postController.findByUserId
+);
+
 export default router;

@@ -1,6 +1,8 @@
+import { findByUserId } from './../controllers/postController';
 import { PostInterface } from 'common/interfaces';
 import { postsCollection } from '../db';
 import { ObjectId } from 'mongodb';
+import { ParamsDictionary } from 'express-serve-static-core';
 
 class Post {
   data: PostInterface;
@@ -56,6 +58,20 @@ class Post {
 
   findOneById(id: any) {
     postsCollection.findOne({ _id: id });
+  }
+
+  static findByUserId(authorId: string) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let posts = await postsCollection
+          .find({ author: new ObjectId(authorId) })
+          .toArray();
+        console.log(posts);
+        resolve(posts);
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   upload() {}

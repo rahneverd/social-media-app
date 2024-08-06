@@ -21,3 +21,15 @@ export const apiUpload = async (
     res.status(400).send('failed');
   }
 };
+
+export const findByUserId = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    let posts = await Post.findByUserId(req.body?.authorId);
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(404).json(error).end();
+  }
+};
