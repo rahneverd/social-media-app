@@ -28,19 +28,19 @@ router.post(
 
 router.post(
   '/upload',
-  userController.apiMustBeLoggedIn,
   upload.single('file'),
+  userController.apiMustBeLoggedIn,
   postController.apiUpload
 );
 
 router.post(
   '/findByUserId',
-  // userController.apiMustBeLoggedIn,
+  userController.apiMustBeLoggedIn,
   postController.findAllPostsByUserId
 );
 
 router.post(
-  '/findByUsername',
+  '/find-all-by-username',
   // userController.apiMustBeLoggedIn,
   userController.apiFindByUserName,
   postController.findAllPostsByUserId

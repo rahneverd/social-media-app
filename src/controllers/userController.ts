@@ -3,6 +3,7 @@ import { UserInterface } from 'common/interfaces';
 import express from 'express';
 import User from '../models/User';
 import jwt from 'jsonwebtoken';
+const fs = require('fs');
 
 // home controller
 export const home = (req: express.Request, res: express.Response) => {
@@ -15,9 +16,21 @@ export const apiMustBeLoggedIn = (
   next: express.NextFunction
 ) => {
   try {
+    console.log('apiMustBeLoggedIn req?.body: ', req?.body?.token, req?.file);
+
     req['apiUser'] = jwt.verify(req?.body?.token, process.env.JWTSECRET || '');
     next();
   } catch (error) {
+    console.log('apiMustBeLoggedIn:', error);
+    if (req?.file) {
+      fs.unlink(req?.file?.path, (err: any) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('File is deleted.');
+        }
+      });
+    }
     res.status(403).json('Sorry, you must provide a valid token').end();
   }
 };

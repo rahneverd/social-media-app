@@ -14,7 +14,7 @@ const app = express();
 app.use(cors());
 
 // set req data
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // set public
