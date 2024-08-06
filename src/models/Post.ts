@@ -8,9 +8,7 @@ class Post {
   errors: any[];
 
   constructor(data: PostInterface, authorId: any) {
-    console.log(authorId);
     this.data = { ...data, author: new ObjectId(authorId?._id) };
-    console.log(this.data);
     this.errors = [];
   }
 
@@ -40,7 +38,6 @@ class Post {
     return new Promise(async (resolve, reject) => {
       this.cleanUp();
       this.validate();
-      console.log('here');
       if (!this.errors.length) {
         // save post to db
         try {
@@ -65,7 +62,6 @@ class Post {
         let posts = await postsCollection
           .find({ author: new ObjectId(authorId) })
           .toArray();
-        console.log(posts);
         resolve(posts);
       } catch (error) {
         reject(error);

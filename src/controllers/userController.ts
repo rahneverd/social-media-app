@@ -16,17 +16,13 @@ export const apiMustBeLoggedIn = (
   next: express.NextFunction
 ) => {
   try {
-    console.log('apiMustBeLoggedIn req?.body: ', req?.body?.token);
-
     const tokenObj: any = jwt.verify(
       req?.body?.token,
       process.env.JWTSECRET || ''
     );
     req['apiUser'] = tokenObj?._id;
-    console.log('apiUser: ', req?.apiUser);
     next();
   } catch (error) {
-    console.log('apiMustBeLoggedIn:', error);
     if (req?.file) {
       fs.unlink(req?.file?.path, (err: any) => {
         if (err) {
@@ -94,7 +90,6 @@ export const login = async (req: express.Request, res: express.Response) => {
 export const apiRefreshToken = async (req: any, res: express.Response) => {
   try {
     // let newUser: any = await user.login();
-    console.log(req?.apiUser);
     let newUser: any = await User.findOneById(req?.apiUser);
     let token = await jwt.sign(
       { _id: newUser._id },
@@ -111,15 +106,7 @@ export const apiRefreshToken = async (req: any, res: express.Response) => {
         picture: newUser?.picture
       })
       .end();
-    console.log('from refreshToken: ', {
-      token: token,
-      username: newUser?.username,
-      _id: newUser?._id,
-      email: newUser?.email,
-      picture: newUser?.picture
-    });
   } catch (error) {
-    console.log(error);
     res.status(400).json(error).end();
   }
 };
@@ -134,7 +121,6 @@ export const apiLogin = async (req: express.Request, res: express.Response) => {
       process.env.JWTSECRET || '',
       { expiresIn: '30m' }
     );
-    console.log(token);
     res
       .status(200)
       .json({
