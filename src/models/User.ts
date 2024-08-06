@@ -82,15 +82,15 @@ class User {
     }
   }
 
-  findOneByUsername() {
+  static findOneByUsername(username: string) {
     return new Promise(async (resolve, reject) => {
       try {
         let user = await usersCollection.findOne({
-          username: this.data?.username
+          username: username
         });
         resolve(user);
       } catch (error) {
-        reject();
+        reject(error);
       }
     });
   }
@@ -119,7 +119,7 @@ class User {
         reject(this.errors);
       } else {
         // check if username exists
-        let usernameExists = await this.findOneByUsername();
+        let usernameExists = await User.findOneByUsername(this.data?.username);
         if (usernameExists) {
           reject(['Username already exists']);
         } else {

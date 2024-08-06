@@ -1,3 +1,4 @@
+// import { findByUsername } from './postController';
 import { UserInterface } from 'common/interfaces';
 import express from 'express';
 import User from '../models/User';
@@ -101,3 +102,22 @@ export const logout = (req: express.Request, res: express.Response) => {};
 
 // api logout controller
 export const apiLogout = (req: express.Request, res: express.Response) => {};
+
+// api find user by username
+export const apiFindByUserName = async (
+  req: any,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    let user = await User.findOneByUsername(req.body?.username);
+    if (user) {
+      req.body = user;
+      next();
+    } else {
+      res.status(404).json('No user found');
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};

@@ -36,7 +36,14 @@ router.post(
 router.post(
   '/findByUserId',
   // userController.apiMustBeLoggedIn,
-  postController.findByUserId
+  postController.findAllPostsByUserId
+);
+
+router.post(
+  '/findByUsername',
+  // userController.apiMustBeLoggedIn,
+  userController.apiFindByUserName,
+  postController.findAllPostsByUserId
 );
 
 export default router;

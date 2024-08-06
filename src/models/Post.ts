@@ -1,4 +1,3 @@
-import { findByUserId } from './../controllers/postController';
 import { PostInterface } from 'common/interfaces';
 import { postsCollection } from '../db';
 import { ObjectId } from 'mongodb';
@@ -60,7 +59,7 @@ class Post {
     postsCollection.findOne({ _id: id });
   }
 
-  static findByUserId(authorId: string) {
+  static findAllPostsByUserId(authorId: string) {
     return new Promise(async (resolve, reject) => {
       try {
         let posts = await postsCollection
@@ -73,6 +72,8 @@ class Post {
       }
     });
   }
+
+  static findByUsername(username: string) {}
 
   upload() {}
 }

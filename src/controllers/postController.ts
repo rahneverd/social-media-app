@@ -22,12 +22,14 @@ export const apiUpload = async (
   }
 };
 
-export const findByUserId = async (
+export const findAllPostsByUserId = async (
   req: express.Request,
   res: express.Response
 ) => {
   try {
-    let posts = await Post.findByUserId(req.body?.authorId);
+    let posts = await Post.findAllPostsByUserId(
+      req.body?._id ? req.body?._id : req.body?.userId
+    );
     res.status(200).json(posts);
   } catch (error) {
     res.status(404).json(error).end();
