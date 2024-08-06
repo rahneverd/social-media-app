@@ -18,7 +18,12 @@ export const apiMustBeLoggedIn = (
   try {
     console.log('apiMustBeLoggedIn req?.body: ', req?.body?.token);
 
-    req['apiUser'] = jwt.verify(req?.body?.token, process.env.JWTSECRET || '');
+    const tokenObj: any = jwt.verify(
+      req?.body?.token,
+      process.env.JWTSECRET || ''
+    );
+    req['apiUser'] = tokenObj?._id;
+    console.log('apiUser: ', req?.apiUser);
     next();
   } catch (error) {
     console.log('apiMustBeLoggedIn:', error);
@@ -89,6 +94,7 @@ export const login = async (req: express.Request, res: express.Response) => {
 export const apiRefreshToken = async (req: any, res: express.Response) => {
   try {
     // let newUser: any = await user.login();
+    console.log(req?.apiUser);
     let newUser: any = await User.findOneById(req?.apiUser);
     let token = await jwt.sign(
       { _id: newUser._id },
@@ -113,6 +119,7 @@ export const apiRefreshToken = async (req: any, res: express.Response) => {
       picture: newUser?.picture
     });
   } catch (error) {
+    console.log(error);
     res.status(400).json(error).end();
   }
 };
