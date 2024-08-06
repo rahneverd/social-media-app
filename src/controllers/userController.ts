@@ -16,7 +16,7 @@ export const apiMustBeLoggedIn = (
   next: express.NextFunction
 ) => {
   try {
-    console.log('apiMustBeLoggedIn req?.body: ', req?.body?.token, req?.file);
+    console.log('apiMustBeLoggedIn req?.body: ', req?.body?.token);
 
     req['apiUser'] = jwt.verify(req?.body?.token, process.env.JWTSECRET || '');
     next();
@@ -31,7 +31,7 @@ export const apiMustBeLoggedIn = (
         }
       });
     }
-    res.status(403).json('Sorry, you must provide a valid token').end();
+    res.status(403).json(['Sorry, you must provide a valid token']).end();
   }
 };
 
@@ -85,6 +85,38 @@ export const login = async (req: express.Request, res: express.Response) => {
   }
 };
 
+// api refresh token
+export const apiRefreshToken = async (req: any, res: express.Response) => {
+  try {
+    // let newUser: any = await user.login();
+    let newUser: any = await User.findOneById(req?.apiUser);
+    let token = await jwt.sign(
+      { _id: newUser._id },
+      process.env.JWTSECRET || '',
+      { expiresIn: '30m' }
+    );
+    res
+      .status(200)
+      .json({
+        token: token,
+        username: newUser?.username,
+        _id: newUser?._id,
+        email: newUser?.email,
+        picture: newUser?.picture
+      })
+      .end();
+    console.log('from refreshToken: ', {
+      token: token,
+      username: newUser?.username,
+      _id: newUser?._id,
+      email: newUser?.email,
+      picture: newUser?.picture
+    });
+  } catch (error) {
+    res.status(400).json(error).end();
+  }
+};
+
 // api login controller
 export const apiLogin = async (req: express.Request, res: express.Response) => {
   let user = new User(req?.body);
@@ -95,6 +127,7 @@ export const apiLogin = async (req: express.Request, res: express.Response) => {
       process.env.JWTSECRET || '',
       { expiresIn: '30m' }
     );
+    console.log(token);
     res
       .status(200)
       .json({

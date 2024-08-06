@@ -14,6 +14,11 @@ router.get('/', (req: express.Request, res: express.Response) => {
 // auth related routes
 router.post('/register', userController.apiRegister);
 router.post('/login', userController.apiLogin);
+router.post(
+  '/refresh-token',
+  userController.apiMustBeLoggedIn,
+  userController.apiRefreshToken
+);
 router.post('/logout', userController.apiLogout);
 
 // user related routes

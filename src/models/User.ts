@@ -4,6 +4,7 @@ import { usersCollection } from '../db';
 import bcrypt from 'bcryptjs';
 import { USER_CONST } from '../common/constants';
 import md5 from 'md5';
+import { ObjectId } from 'mongodb';
 
 class User {
   data: UserInterface;
@@ -87,6 +88,19 @@ class User {
       try {
         let user = await usersCollection.findOne({
           username: username
+        });
+        resolve(user);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  static findOneById(userId: string) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let user = await usersCollection.findOne({
+          _id: new ObjectId(userId)
         });
         resolve(user);
       } catch (error) {
