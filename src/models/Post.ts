@@ -8,7 +8,8 @@ class Post {
   errors: any[];
 
   constructor(data: PostInterface, authorId: any) {
-    this.data = { ...data, author: new ObjectId(authorId?._id) };
+    this.data = { ...data, author: new ObjectId(authorId) };
+
     this.errors = [];
   }
 

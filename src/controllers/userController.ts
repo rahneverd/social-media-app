@@ -16,6 +16,7 @@ export const apiMustBeLoggedIn = (
   next: express.NextFunction
 ) => {
   try {
+    console.log('apiMustBeLoggedIn');
     const tokenObj: any = jwt.verify(
       req?.body?.token,
       process.env.JWTSECRET || ''
@@ -32,6 +33,7 @@ export const apiMustBeLoggedIn = (
         }
       });
     }
+    console.log(error);
     res.status(403).json(['Sorry, you must provide a valid token']).end();
   }
 };
@@ -149,9 +151,11 @@ export const apiFindByUserName = async (
   next: express.NextFunction
 ) => {
   try {
+    console.log('here');
     let user = await User.findOneByUsername(req.body?.username);
     if (user) {
       req.body = user;
+      req.body._id = req.body._id.toString();
       next();
     } else {
       res.status(404).json('No user found');

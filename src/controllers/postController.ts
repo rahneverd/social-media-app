@@ -27,6 +27,7 @@ export const findAllPostsByUserId = async (
   res: express.Response
 ) => {
   try {
+    console.log(req?.body);
     let posts = await Post.findAllPostsByUserId(
       req.body?._id ? req.body?._id : req.body?.userId
     );
