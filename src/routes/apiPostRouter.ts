@@ -34,7 +34,7 @@ router.post(
 );
 
 router.post(
-  '/findByUserId',
+  '/find-by-user-id',
   userController.apiMustBeLoggedIn,
   postController.findAllPostsByUserId
 );
