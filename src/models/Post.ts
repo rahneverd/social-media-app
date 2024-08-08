@@ -70,6 +70,35 @@ class Post {
     });
   }
 
+  static reUseableQuery(
+    uniqueOprations: any,
+    visitorId: string,
+    finalOperations: any
+  ) {
+    return new Promise((resolve, reject) => {
+      let aggOperations = uniqueOprations
+        .concat([
+          {
+            $lookup: {
+              from: process.env.USERCOLLECTION || 'users',
+              localField: 'author',
+              foreignField: '_id',
+              as: 'authorInfo'
+            }
+          },
+          {
+            $project: {
+              caption: 1,
+              image: 1,
+              createdAt: 1,
+              author: { $arrayElemAt: ['authorInfo', 0] }
+            }
+          }
+        ])
+        .concat([finalOperations]);
+    });
+  }
+
   static findByUsername(username: string) {}
 
   upload() {}
