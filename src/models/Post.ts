@@ -60,9 +60,12 @@ class Post {
   static findAllPostsByUserId(authorId: string) {
     return new Promise(async (resolve, reject) => {
       try {
-        let posts = await postsCollection
-          .find({ author: new ObjectId(authorId) })
-          .toArray();
+        // let posts = await postsCollection
+        //   .find({ author: new ObjectId(authorId) })
+        //   .toArray();
+        let posts = await Post.reUseableQuery([
+          { $match: { author: new ObjectId(authorId) } }
+        ]);
         resolve(posts);
       } catch (error) {
         reject(error);
@@ -72,10 +75,10 @@ class Post {
 
   static reUseableQuery(
     uniqueOprations: any,
-    visitorId: string,
-    finalOperations: any
+    visitorId?: string,
+    finalOperations: any = []
   ) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let aggOperations = uniqueOprations
         .concat([
           {
@@ -91,15 +94,18 @@ class Post {
               caption: 1,
               image: 1,
               createdAt: 1,
-              author: { $arrayElemAt: ['authorInfo', 0] }
+              author: '$authorInfo'
+              // authorObj: { $arrayElemAt: ['authorInfo', 0] }
             }
           }
         ])
-        .concat([finalOperations]);
+        .concat(finalOperations);
+
+      let posts = await postsCollection.aggregate(aggOperations).toArray();
+
+      resolve(posts);
     });
   }
-
-  static findByUsername(username: string) {}
 
   upload() {}
 }
